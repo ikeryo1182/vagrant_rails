@@ -18,17 +18,15 @@ vagrant ssh
 ```
 
 + mysql初期パスワード確認方法
-  $ sudo cat /var/log/mysqld.log
-   A temporary password is generated for root@localhost: (パスワード)
-
+``` 
+$ sudo cat /var/log/mysqld.log
+#A temporary password is generated for root@localhost: (パスワード)
+```
 + ansible実行コマンド(本番サーバーに反映する場合):
 ```
 $ ansible-playbook site.yml -i production
 ```
-
-# create_gaiki
-
-デプロイコマンド
++ デプロイコマンド
 ```
 bundle exec cap production deploy:initial
 ```
