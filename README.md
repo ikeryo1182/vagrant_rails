@@ -12,7 +12,7 @@ http://javabayashi.hatenablog.com/entry/2017/02/10/135852
 ## 手順
 ```
 cd (任意のフォルダ)
-git clone git@github.com:i-standard1/at-enginner_rails_server.git
+git clone git@github.com:ikeryo1182/vagrant_default.git
 vagrant up
 vagrant ssh
 ```
