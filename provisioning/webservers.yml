@@ -1,0 +1,79 @@
+---
+- hosts: app_server
+  become: yes
+  vars:
+    ruby_ver: 2.4.1
+    rails_ver: 5.1.2
+
+  tasks:
+    - name: install gcc
+      yum: name=gcc
+
+    - name: install gcc-c++
+      yum: name=gcc-c++
+
+    - name: install bzip2
+      yum: name=bzip2
+
+    - name: install openssl-devel
+      yum: name=openssl-devel
+
+    - name: install readline-devel
+      yum: name=readline-devel
+
+    - name: install zlib-devel
+      yum: name=zlib-devel
+
+    - name: install git
+      yum: name=git
+
+    - name: install sqlite-devel
+      yum: name=sqlite-devel
+
+    - name: install mysql
+      yum: name=mysql      
+
+    - name: install mysql-devel
+      yum: name=mysql-devel
+
+    - name: install rbenv
+      git: repo=https://github.com/sstephenson/rbenv.git
+           dest=/usr/local/src/rbenv
+           version=master
+
+    - name: change permit usr/local/src/rbenv
+      file: path=/usr/local/src/rbenv mode=0777           
+
+    - name: add rbenv path to profile.d
+          # copy: src=files/rbenv.sh dest=/etc/profile.d/rbenv.sh
+      copy: content="export RBENV_ROOT=\"/usr/local/src/rbenv\"\nexport PATH=\"${RBENV_ROOT}/bin:${PATH}\"\neval \"$(rbenv init -)\"" dest=/etc/profile.d/rbenv.sh
+
+    - name: install ruby_build
+      git: repo=https://github.com/sstephenson/ruby-build.git
+           dest=/usr/local/src/rbenv/plugins/ruby-build
+           version=master
+
+    - name: check rbenv directory check
+      stat:
+        path: "/usr/local/src/rbenv/versions/{{ruby_ver}}"
+      register: check_rbenv
+
+    - name: rbenv install
+      shell: /bin/bash -lc "rbenv install {{ruby_ver}} && rbenv rehash && rbenv global {{ruby_ver}}"
+      when:
+        - not check_rbenv.stat.exists
+
+    - name: install bundler
+      shell: "/usr/local/src/rbenv/shims/gem install bundler"
+      args:
+        creates: "/usr/local/src/rbenv/shims/bundle"
+
+    - name: check rails exist check
+      stat:
+        path: "/usr/local/src/rbenv/shims/rails"
+      register: check_rails
+
+    - name: rails install
+      shell: /bin/bash -lc "gem install rails --version=\"{{rails_ver}}\""
+      when: not check_rails.stat.exists
+

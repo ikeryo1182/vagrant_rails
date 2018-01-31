@@ -1,0 +1,9 @@
+[app_server]
+ec2-54-174-230-156.compute-1.amazonaws.com
+
+[production_server]
+ec2-54-174-230-156.compute-1.amazonaws.com
+
+[app_server:vars]
+ansible_ssh_user=ec2-user
+ansible_ssh_private_key_file=~/.ssh/id_rsa

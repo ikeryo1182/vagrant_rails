@@ -1,0 +1,30 @@
+---
+- hosts: production_server
+  become: yes
+  vars:
+
+  tasks:
+    - copy: src=nginx.repo dest=/etc/yum.repos.d/nginx.repo owner=root group=root mode=0755
+
+    - name: install nginx
+      command: yum -y --enablerepo=nginx install nginx
+
+    - name: www ユーザの作成
+      user: name=www
+
+    - name: deploy ユーザの作成
+      user: name=deploy
+
+    - name: webアプリ格納フォルダ
+      file: path=/var/www state=directory owner=www group=www mode=0770
+
+    - name: wwwグループに追加
+      command: gpasswd -a deploy www
+    - name: wwwグループに追加
+      command: gpasswd -a nginx www
+
+    - name: deploy　sshフォルダ作成
+      file: path=/home/deploy/.ssh state=directory owner=deploy group=deploy mode=0700
+
+    - copy: src=~/.ssh/id_rsa.pub dest=/home/deploy/.ssh/authorized_keys force=no owner=deploy group=deploy mode=0700
+

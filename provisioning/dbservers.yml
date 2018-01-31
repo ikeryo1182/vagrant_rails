@@ -1,0 +1,15 @@
+---
+- hosts: db_server
+  become: yes
+  
+  tasks:
+    - name: install mysql-server
+      yum: name=https://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm      
+
+    - name: install mysql-community-server
+      yum: name=mysql-community-server
+
+    - name: add config to my.cnf
+      lineinfile: >
+        dest=/etc/my.cnf
+        line="character-set-server = utf8\ndefault_password_lifetime = 0"
